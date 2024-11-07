@@ -1,0 +1,5 @@
+run this first
+
+pip install numpy pandas scikit-learn tensorflow flask
+
+DATASET DESCRIPTION

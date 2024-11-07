@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>KEQ Bar Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <style>
+      body {
+        background-color: #2e2e2e;
+      }
+      canvas {
+        background-color: #444444;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="keqBarChart"></canvas>
+    <script>
+      // Ensure the DOM is fully loaded before running the script
+      document.addEventListener("DOMContentLoaded", function () {
+        // KEQ Bar Chart
+        const keqBarChart = document
+          .getElementById("keqBarChart")
+          .getContext("2d");
+
+        // Process the data for the KEQ chart
+        const labels = studentData.map((theme) => theme.theme_name);
+        const baseData = new Array(labels.length).fill(50);
+        const improvementData = studentData.map((theme) =>
+          Math.max(theme.score)
+        );
+        const targetData = studentData.map((theme) =>
+          Math.max(50 - theme.score, 0)
+        );
+
+        new Chart(keqBarChart, {
+          type: "bar",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: "Base",
+                backgroundColor: "#6CD65D",
+                borderWidth: 1,
+                data: baseData,
+              },
+              {
+                label: "Improvement",
+                backgroundColor: "#47B2E0",
+                borderWidth: 1,
+                data: improvementData,
+              },
+              {
+                label: "Target",
+                backgroundColor: "#F6D23E",
+                borderWidth: 1,
+                data: targetData,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              title: {
+                display: true,
+                text: `Kinesthetic Emotional Intelligence Quotient (KEQ) for ${studentName}`,
+                color: "white",
+                font: {
+                  size: 18,
+                  weight: "bold",
+                },
+                padding: {
+                  top: 10,
+                  bottom: 30,
+                },
+              },
+              legend: {
+                display: true,
+                position: "bottom",
+                labels: {
+                  color: "white",
+                  font: {
+                    weight: "bold",
+                  },
+                },
+              },
+              tooltip: {
+                mode: "index",
+                intersect: false,
+                callbacks: {
+                  label: function (context) {
+                    let label = context.dataset.label || "";
+                    if (label) {
+                      label += ": ";
+                    }
+                    if (context.parsed.y !== null) {
+                      label += context.parsed.y + "%";
+                    }
+                    return label;
+                  },
+                },
+              },
+              datalabels: {
+                color: "black",
+                anchor: "end",
+                align: "top",
+                formatter: function (value, context) {
+                  return value;
+                },
+              },
+            },
+            scales: {
+              x: {
+                stacked: true,
+                ticks: {
+                  color: "white",
+                  font: {
+                    weight: "bold",
+                  },
+                },
+              },
+              y: {
+                stacked: true,
+                beginAtZero: true,
+                ticks: {
+                  color: "white",
+                  font: {
+                    weight: "bold",
+                  },
+                  callback: function (value) {
+                    return value + "%";
+                  },
+                },
+                max: 100,
+              },
+            },
+          },
+          plugins: [ChartDataLabels],
+        });
+      });
+    </script>
+  </body>
+</html>
